@@ -69,7 +69,7 @@ def user():
 @app.route('/edit', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
-    form = EditUserForm()
+    form = EditUserForm(g.user.nickname)
     if form.validate_on_submit():
         g.user.nickname = form.nickname.data
         db.session.add(g.user)
@@ -79,3 +79,12 @@ def edit_profile():
     else:
         form.nickname.data = g.user.nickname
     return render_template('edituser.html', form=form)
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('500.html'), 500
