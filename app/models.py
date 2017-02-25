@@ -6,6 +6,22 @@ class User(db.Model):
     email = db.Column(db.String(120), index=True, unique=True)
     categories = db.relationship('Category', backref='owner', lazy='dynamic')
     accounts = db.relationship('Account', backref='owner', lazy='dynamic')
+    last_connected = db.Column(db.DateTime)
+
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return str(self.id)
 
     def __repr__(self):
         return '<User %r>' % (self.nickname)
